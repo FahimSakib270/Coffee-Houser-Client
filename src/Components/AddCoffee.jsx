@@ -1,8 +1,34 @@
 import React from "react";
+import Swal from "sweetalert2";
 
 const AddCoffee = () => {
   const handleAddCoffee = (e) => {
     e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const newCoffee = Object.fromEntries(formData.entries());
+
+    // send data to the server
+    fetch("http://localhost:3000/coffee", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newCoffee),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          console.log("after adding coffee to db", data);
+          Swal.fire({
+            position: "top",
+            icon: "success",
+            title: "Coffee Added Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
   };
   return (
     <div className="p-14">
