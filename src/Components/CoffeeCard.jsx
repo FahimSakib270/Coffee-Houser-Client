@@ -1,7 +1,9 @@
+import Link from "daisyui/components/link";
 import React from "react";
+import { Links, NavLink } from "react-router";
 import Swal from "sweetalert2";
 
-const CoffeeCard = ({ coffee }) => {
+const CoffeeCard = ({ coffee, setCoffes, coffees }) => {
   const { photo, Price, coffeename, quantity, _id } = coffee;
 
   const handleDelete = (id) => {
@@ -30,6 +32,9 @@ const CoffeeCard = ({ coffee }) => {
                 showConfirmButton: false,
                 timer: 1500,
               });
+              //remove coffee from state
+              const remaingCoffee = coffees.filter((cof) => cof._id !== _id);
+              setCoffes(remaingCoffee);
             }
           });
       }
@@ -59,8 +64,16 @@ const CoffeeCard = ({ coffee }) => {
 
         <div className="card-actions justify-end mt-auto">
           <div className="join join-vertical md:join-horizontal gap-2">
-            <button className="btn btn-outline btn-primary btn-sm">View</button>
-            <button className="btn btn-outline btn-warning btn-sm">Edit</button>
+            <NavLink to={`/coffee/${_id}`}>
+              <button className="btn btn-outline btn-primary btn-sm">
+                View
+              </button>
+            </NavLink>
+            <NavLink to={`/updateCoffee/${_id}`}>
+              <button className="btn btn-outline btn-warning btn-sm">
+                Edit
+              </button>
+            </NavLink>
             <button
               onClick={() => {
                 handleDelete(_id);
