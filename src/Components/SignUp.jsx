@@ -9,16 +9,22 @@ const SignUp = () => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
-    const { email, password, ...userProfile } = Object.fromEntries(
+    const { email, password, ...restFormData } = Object.fromEntries(
       formData.entries()
     );
-    console.log(email, password, userProfile);
 
     // create user
     createUser(email, password)
       .then((res) => {
         {
-          console.log(res.user);
+          console.log(res);
+          const userProfile = {
+            email,
+            ...restFormData,
+            creationTime: res?.user?.metadata?.creationTime,
+            lastSignInTime: res?.user?.metadata?.lastSignInTime,
+          };
+          console.log(userProfile);
 
           //save profile info to the database
           fetch("http://localhost:3000/user", {
@@ -32,6 +38,8 @@ const SignUp = () => {
               return res.json();
             })
             .then((data) => {
+              console.log(data);
+
               if (data.insertedId) {
                 Swal.fire({
                   position: "top",
@@ -138,7 +146,6 @@ const SignUp = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
             <div className="mt-6">
               <button className="btn btn-primary w-full" type="submit">
                 Sign Up
@@ -146,7 +153,6 @@ const SignUp = () => {
             </div>
           </form>
 
-          {/* Footer / Login Link */}
           <p className="mt-4 text-center text-sm text-gray-500">
             Already have an account?{" "}
             <a
